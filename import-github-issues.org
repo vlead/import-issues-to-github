@@ -1,0 +1,207 @@
+#Title: Import issues in Github from csv files.
+
+
+* CSV-Github project
+1. Created a new repository in github in my account to explore options
+   of importing issues from csv files. As I do not have admin access
+   to virtual-labs repository. This way now I can explore the admin
+   settings.
+
+2. Created a test issue in the repository and assigned a label to it.
+
+3. Export or import issue data in bitbucket.
+https://confluence.atlassian.com/bitbucket/export-or-import-issue-data-330797432.html
+
+4. clone repository from CSV-github-import-export
+https://github.com/controlgroup/CSV-GitHub-import-export
+
+5. Install ruby on rails.
+#+begin_example
+yum install ruby
+yum install gcc g++ make automake autoconf curl-devel openssl-devel zlib-devel httpd-devel apr-devel apr-util-devel sqlite-devel
+yum install ruby-rdoc ruby-devel
+yum install rubygems
+gem update
+gem update --system
+gem install rails
+#+end_example
+
+6. Upgrade ruby to the latest version.
+#+begin_example
+yum remove ruby ruby-devel
+yum groupinstall "Development Tools"
+yum install openssl-devel
+wget http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz
+tar xvfvz ruby-2.1.2.tar.gz
+cd ruby-2.1.2
+./configure
+make
+make install
+sudo gem update --system
+sudo gem install bundler 
+yum remove ruby ruby-devel
+yum groupinstall "Development Tools"
+yum install openssl-devel
+#+end_example
+
+7. Install octokit
+#+begin_example
+gem install octokit
+#+end_example
+
+* Github apis
+** Authentication
+Authenticate to github using OAuth. OAuth generates a 40 character
+authorization token for a user account, to authenticate.
+
+Example:
+- Token ::  ba89586c2af27b18c180f4fb346bbba838532395
+
+Then we can use this authentication token to send http request to
+github apis.
+
+** User API
+
+#+begin_example
+curl -i -H 'Authorization: token ba89586c2af27b18c180f4fb346bbba838532395' https://api.github.com/user
+#+end_example
+
+** Repos API
+1. View repositories for the authenticated user, or we can list repos
+   for another user, or we can list repos for an organization
+#+begin_example
+curl -i -H 'Authorization: token ba89586c2af27b18c180f4fb346bbba838532395' https://api.github.com/user/repos
+curl -i https://api.github.com/users/technoweenie/repos
+curl -i https://api.github.com/orgs/mozilla/repos
+curl -i -H 'Authorization: token ba89586c2af27b18c180f4fb346bbba838532395' https://api.github.com/user/repos?type=owner
+#+end_example
+
+2. Create a repository.
+#+begin_example
+curl -i -H 'Authorization: token ba89586c2af27b18c180f4fb346bbba838532395' -d '{ "name": "blog", "auto_init": true, "gitignore_template": "nanoc" }' https://api.github.com/user/repos
+#+end_example
+
+The resulting repository will be found at
+https://github.com/<your_username>/blog. To create a repository under
+an organization for which you're an owner, just change the API method
+from /user/repos to /orgs/<org_name>/repos
+
+Next, let's fetch our newly created repository:
+#+begin_example
+curl -i https://api.github.com/repos/ayogi/blog
+#+end_example
+
+** Issues API
+*** Listing Issues
+1. To get all issues.
+#+begin_example
+curl -i -H 'Authorization: token ba89586c2af27b18c180f4fb346bbba838532395' https://api.github.com/issues
+#+end_example
+
+2. To get all the issues under your github organizations.
+#+begin_example
+curl -i -H 'Authorization: token ba89586c2af27b18c180f4fb346bbba838532395' https://api.github.com/orgs/Virtual-Labs/issues
+#+end_example
+
+3. To get all issues under a single repository.
+#+begin_example
+curl -i -H 'Authorization: token ba89586c2af27b18c180f4fb346bbba838532395' https://api.github.com/repos/Virtual-Labs/problem-solving-iiith/issues
+curl -i -H 'Authorization: token ba89586c2af27b18c180f4fb346bbba838532395' https://api.github.com/repos/ayogi/import-github-issues/issues
+#+end_example
+
+4. To get a single issue
+#+begin_example
+GET /repos/:owner/:repo/issues/:number
+#+end_example
+
+
+*** Creating Issues
+Any user with pull access to a repository can create an issue.
+
+#+begin_example
+POST /repos/:owner/:repo/issues
+#+end_example
+
+#+begin_example
+curl -i -H 'Authorization: token ba89586c2af27b18c180f4fb346bbba838532395' -d '{ "title": "New logo", "body": "We should have one", "labels": ["design"]}' https://api.github.com/repos/ayogi/import-github-issues/issues
+#+end_example
+
+- Paraemters ::
+|-----------+-----------------+----------------------------------------------------------------|
+| *Name     | Type            | Description*                                                   |
+|-----------+-----------------+----------------------------------------------------------------|
+| title     | string          | *Required* The title of the issue.                             |
+|-----------+-----------------+----------------------------------------------------------------|
+| body      | string          | The conent of the issue                                        |
+|-----------+-----------------+----------------------------------------------------------------|
+| assignee  | string          | Login for the user that assigned to.                           |
+|           |                 | NOTE: Only users with push access can set the assignee         |
+|           |                 | for new issues. The assignee is silently dropped otherwise.    |
+|-----------+-----------------+----------------------------------------------------------------|
+| milestone | integer         | The number of the milestone with.                              |
+|-----------+-----------------+----------------------------------------------------------------|
+| labels    | array of string | Labels to associate with this issue. NOTE: Only users with     |
+|           |                 | push access can set labels for new issues. Labels are silently |
+|           |                 | dropped otherwise.                                             |
+|-----------+-----------------+----------------------------------------------------------------|
+
+#+begin_example
+{
+  "title": "Found a bug",
+  "body": "I'm having a problem with this.",
+  "assignee": "octocat",
+  "milestone": 1,
+  "labels": [
+    "Label1",
+    "Label2"
+  ]
+}
+#+end_example
+
+#+begin_example
+
+curl -i -H 'Authorization: token ba89586c2af27b18c180f4fb346bbba838532395' -d '{ "title": "QA_Defect_Structural Dynamics_100", "body": """
+Defect Description :
+In the "Vibration Control" experiment, the minimum requirement to run the experiment is not displayed in the page instead a page or Scrolling should appear providing information on minimum requirement to run this experiment, information like Bandwith,Device Resolution,Hardware Configuration and Software Required.
+
+Actual Result :
+In the "Vibration Control" experiment, the minimum requirement to run the experiment is not displayed in the page.     
+
+Environment :
+OS: Windows 7,Linux
+Browsers: Firefox,Chrome
+Bandwidth : 100Mbps
+Hardware Configuration:8GBRAM
+Processor:i5
+""", "labels": ["S2"]}' https://api.github.com/repos/ayogi/import-github-issues/issues
+#+end_example
+
+** Conditional Requests
+A big part of being a good API citizen is respecting rate limits by
+caching information that has not changed.
+#+begin_example
+curl -i https://api.github.com/users/defunkt
+
+HTTP/1.1 200 OK
+ETag: "bfd85cbf23ac0b0c8a29bee02e7117c6"
+#+end_example
+
+Take note of the HTTP status code of =200= and the ETag header. The
+ETag is a fingerprint of the response. If we pass that on subsequent
+calls, we can tell the API to give us the resource again, only if it
+has changed.
+#+begin_example
+curl -i -H 'If-None-Match: "bfd85cbf23ac0b0c8a29bee02e7117c6"' https://api.github.com/users/defunkt
+
+HTTP/1.1 304 Not Modified
+#+end_example
+
+The =304= status code indicates that the resource hasn't changed since
+the last time we asked for it and resource will contain no body. As a
+bonus, =304= response don't count against your rate limit.
+
+
+** Useful Links
+1. https://developer.github.com/guides/getting-started/
+2. https://developer.github.com/v3/issues/
+ 

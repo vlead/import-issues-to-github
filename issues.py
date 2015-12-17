@@ -1,54 +1,54 @@
 import os
 import sys
 import csv
+import json
 
 column = {}
-
+token = "a2bf7f64bd62187791b092989823f4dc16310cc8"
+githubUrl = "https://api.github.com/repos/ayogi/import-github-issues/issues"
 
 def defineTitle(header):
     index = 0
     for title in header:
         column[title] = index
         index+=1
+   return
+
+def printIssue(reader):
+    issueNumber = 1
+    for row in reader:
+        if issueNumber >= 5:
+            break
+        print issueNumber, row[column["Description"]],
+        issueNumber+=1
+    return
+
+def createIssue(row):
+    dictionary = {}
+    dictionary["title"] = row[column["Subject"]]
+    dictionary["body"] = row[column["Description"]]
+    dictionary["labels"] = [row[column["Status"]], row[column["Severity"]], row[column["Category"]], row[column["Assigned by"]], row[column["Release Number"]], row[column["Start date"]], row[column["Project"]]]
+    jsonString = json.dumps(dictionary)
+    curl = """curl -i -H 'Authorization: token %s' -d '%s' %s""" %(token, jsonString, githubUrl)
+    print curl
+    os.system(curl)
 
 def main(args):
-    print args[1]
     filePointer = open(args[1], 'r')
     reader = csv.reader(filePointer, delimiter=',')
     header = reader.next()
     defineTitle(header)
-    print column
-#    for row in reader:
- #       print row
+#    printIssue(reader)
+    row = reader.next()
+    createIssue(row)
     filePointer.close()
     return
 
 """
-body1 = Defect Description
-In the "Vibration Control" experiment, the minimum requirement to run the experiment is not displayed in the page instead a page or Scrolling should appear providing information on minimum requirement to run this experiment, information like Bandwith,Device Resolution,Hardware Configuration and Software Required.
-
-Actual Result :
-In the "Vibration Control" experiment, the minimum requirement to run the experiment is not displayed in the page.     
-
-Environment :
-OS: Windows 7,Linux
-Browsers: Firefox,Chrome
-Bandwidth : 100Mbps
-Hardware Configuration:8GBRAM
-Processor:i
-
-body2 = "Defect Description\nTest multiple lines comment"
+['#', 'Project', 'Tracker', 'Parent task', 'Status', 'Priority', 'Subject', 'Author', 'Assignee', 'Updated', 'Category', 'Target version', 'Start date', 'Due date', 'Estimated time', '% Done', 'Created', 'Closed', 'Related issues', 'Assigned by', 'Severity', 'Category', 'Release Number', 'Developer Comments', 'Test Step No', 'Description']
 
 curl = curl -i -H 'Authorization: token ba89586c2af27b18c180f4fb346bbba838532395' -d '{ "title": "QA_Defect_Structural Dynamics_100", "body": "%s", "labels": ["S2"]}' https://api.github.com/repos/ayogi/import-github-issues/issues
 %(body2)
-
-print curl
-
-os.system(curl)
-
-Labels:
-status -> status
-date -> start date
 """
 
 if __name__ == "__main__":

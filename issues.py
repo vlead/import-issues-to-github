@@ -35,13 +35,22 @@ def createIssue(row):
     testStepNum = row[column["Test Step No"]]
     testStepNum = testStepNum.zfill(2)
     subject = "QA_%s_%s" %(experimentName, feature)
+
     explink = urllib.quote(experimentName)
-    link =  "https://github.com/%s/%s/blob/master/test-cases/integration_test-cases/%s/%s_%s_%s.org" %(organization, project, explink, explink, testStepNum, feature)
-    
+    link =  "https://github.com/%s/%s/blob/master/test-cases/integration_test-cases/%s/%s_%s_%s.org" %(organization, project, explink, explink, testStepNum, feature) 
     description = row[column["Description"]] + "\n Test Step Link:\n%s" %(link)
+
+    statusLabel = "Status: " + row[column["Status"]]
+    severityLabel = "Severity: " + row[column["Severity"]]
+    categoryLabel = "Category: " + row[column["Category"]]
+    assignedByLabel = "Assigned by: " + row[column["Assigned by"]]
+    releaseNumLabel = "Release Number: " + row[column["Release Number"]]
+    dateLabel = "Start Date: " + row[column["Start date"]]
+    projectLabel = "Project: " + row[column["Project"]]
+
     dictionary["title"] = subject
     dictionary["body"] = description
-    dictionary["labels"] = [row[column["Status"]], row[column["Severity"]], row[column["Category"]], row[column["Assigned by"]], row[column["Release Number"]], row[column["Start date"]], row[column["Project"]]]
+    dictionary["labels"] = [statusLabel, severityLabel, categoryLabel, assignedByLabel, releaseNumLabel, dateLabel, projectLabel]
     jsonString = json.dumps(dictionary)
 
     curl = """curl -i -H 'Authorization: token %s' -d '%s' %s""" %(token, jsonString, githubUrl)

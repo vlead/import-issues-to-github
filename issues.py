@@ -50,7 +50,7 @@ def createIssue(row):
 
     dictionary["title"] = subject
     dictionary["body"] = description
-    dictionary["labels"] = [statusLabel, severityLabel, categoryLabel, assignedByLabel, releaseNumLabel, dateLabel, projectLabel]
+    dictionary["labels"] = [statusLabel, severityLabel, categoryLabel, releaseNumLabel]
     jsonString = json.dumps(dictionary)
 
     curl = """curl -i -H 'Authorization: token %s' -d '%s' %s""" %(token, jsonString, githubUrl)

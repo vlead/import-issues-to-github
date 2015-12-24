@@ -27,9 +27,9 @@ def postRequest(curl):
     os.system(curl)
     return
 
-def createIssue(row):
+def createIssue(row, projectName):
     dictionary = {}
-    project = row[column["Project"]]
+    project = projectName
     experimentName = row[column["Experiment name"]]
     feature = row[column["Feature"]]
     testStepNum = row[column["Test Step No"]]
@@ -46,11 +46,11 @@ def createIssue(row):
     assignedByLabel = "Assigned by: " + row[column["Assigned by"]]
     releaseNumLabel = "Release Number: " + row[column["Release Number"]]
     dateLabel = "Start Date: " + row[column["Start date"]]
-    projectLabel = "Project: " + row[column["Project"]]
+    developedByLabel = "Developed By: " + row[column["Developed By"]]
 
     dictionary["title"] = subject
     dictionary["body"] = description
-    dictionary["labels"] = [statusLabel, severityLabel, categoryLabel, releaseNumLabel]
+    dictionary["labels"] = [statusLabel, severityLabel, categoryLabel, releaseNumLabel, developedByLabel]
     jsonString = json.dumps(dictionary)
 
     curl = """curl -i -H 'Authorization: token %s' -d '%s' %s""" %(token, jsonString, githubUrl)
@@ -59,12 +59,14 @@ def createIssue(row):
 
 def main(args):
     filePointer = open(args[1], 'r')
+    basename = os.path.basename(args[1])
+    projectName = basename.strip(".csv")
     reader = csv.reader(filePointer, delimiter=',')
     header = reader.next()
     defineTitle(header)
 #    printIssue(reader)
     row = reader.next()
-    createIssue(row)
+    createIssue(row, projectName)
     filePointer.close()
     return
 

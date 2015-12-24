@@ -1,3 +1,3 @@
-token = "bb402fd82be4e902842bd163d3d2e99f07f754f8 "
-githubUrl = "https://api.github.com/repos/ayogi/import-issues-to-github/issues"
+token = "204d8d54f60c7b95e9bc9852f3bb9ae56a8ee0ef"
+githubUrl = "https://api.github.com/repos/vlead/import-issues-to-github/issues"
 organization = "Virtual-Labs"

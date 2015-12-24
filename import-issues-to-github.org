@@ -54,6 +54,8 @@ gem install octokit
 Authenticate to github using OAuth. OAuth generates a 40 character
 authorization token for a user account, to authenticate.
 
+Create token from https://github.com/settings/tokens
+
 Example:
 - Token ::  ba89586c2af27b18c180f4fb346bbba838532395
 
@@ -205,3 +207,4 @@ bonus, =304= response don't count against your rate limit.
 1. https://developer.github.com/guides/getting-started/
 2. https://developer.github.com/v3/issues/
  
+   

@@ -37,7 +37,8 @@ def createIssue(row, projectName):
     subject = "QA_%s_%s" %(experimentName, feature)
 
     explink = urllib.quote(experimentName)
-    link =  "https://github.com/%s/%s/blob/master/test-cases/integration_test-cases/%s/%s_%s_%s.org" %(organization, project, explink, explink, testStepNum, feature) 
+    featureLink = urllib.quote(feature)
+    link =  "https://github.com/%s/%s/blob/master/test-cases/integration_test-cases/%s/%s_%s_%s.org" %(organization, project, explink, explink, testStepNum, featureLink) 
     description = row[column["Description"]] + "\n Test Step Link:\n%s" %(link)
 
     statusLabel = "Status: " + row[column["Status"]]

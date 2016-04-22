@@ -66,8 +66,16 @@ def main(args):
     header = reader.next()
     defineTitle(header)
 #    printIssue(reader)
+    rowIndex = 1
     row = reader.next()
-    createIssue(row, projectName)
+    while row:
+        createIssue(row, projectName)
+	row = reader.next()
+	rowIndex+=1
+	if rowIndex >= 34:
+	    sleep(10)
+	    rowIndex = 1
+
     filePointer.close()
     return
 

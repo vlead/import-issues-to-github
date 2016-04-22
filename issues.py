@@ -61,7 +61,7 @@ def createIssue(row, projectName):
 def main(args):
     filePointer = open(args[1], 'r')
     basename = os.path.basename(args[1])
-    projectName = basename.strip(".csv")
+    projectName = basename.rstrip(".csv")
     reader = csv.reader(filePointer, delimiter=',')
     header = reader.next()
     defineTitle(header)

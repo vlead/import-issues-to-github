@@ -4,6 +4,7 @@ import csv
 import json
 import urllib
 from config import *
+import time
 
 column = {}
 
@@ -73,7 +74,7 @@ def main(args):
 	row = reader.next()
 	rowIndex+=1
 	if rowIndex >= 34:
-	    sleep(10)
+	    time.sleep(10)
 	    rowIndex = 1
 
     filePointer.close()

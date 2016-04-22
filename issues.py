@@ -55,7 +55,7 @@ def createIssue(row, projectName):
     dictionary["labels"] = [statusLabel, severityLabel, categoryLabel, releaseNumLabel, developedByLabel]
     jsonString = json.dumps(dictionary)
 
-    curl = """curl -i -H 'Authorization: token %s' -d '%s' %s""" %(token, jsonString, githubUrl)
+    curl = """curl -g -i -H 'Authorization: token %s' -d '%s' %s""" %(token, jsonString, githubUrl)
     postRequest(curl)
     return
 

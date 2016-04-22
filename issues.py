@@ -70,12 +70,12 @@ def main(args):
     rowIndex = 1
     row = reader.next()
     while row:
+	if rowIndex >= 35:
+	    time.sleep(20)
+	    rowIndex = 0
         createIssue(row, projectName)
 	row = reader.next()
 	rowIndex+=1
-	if rowIndex >= 34:
-	    time.sleep(10)
-	    rowIndex = 1
 
     filePointer.close()
     return

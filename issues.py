@@ -45,9 +45,9 @@ def createIssue(row, projectName):
     statusLabel = "Status: " + row[column["Status"]]
     severityLabel = "Severity: " + row[column["Severity"]]
     categoryLabel = "Category: " + row[column["Category"]]
-    assignedByLabel = "Assigned by: " + row[column["Assigned by"]]
+#assignedByLabel = "Assigned by: " + row[column["Assigned by"]]
     releaseNumLabel = "Release Number: " + row[column["Release Number"]]
-    dateLabel = "Start Date: " + row[column["Start date"]]
+#   dateLabel = "Start Date: " + row[column["Start date"]]
     developedByLabel = "Developed By: " + row[column["Developed By"]]
 
     dictionary["title"] = subject
